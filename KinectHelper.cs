@@ -73,7 +73,7 @@ namespace KinectTV
         void Kinects_StatusChanged(object sender, StatusChangedEventArgs e)
         {
             JSObject kinectObj = getJSKinectHandler();
-            //if (kinectObj == null) return;
+            if (kinectObj == null) return;
 
             switch (e.Status)
             {
@@ -139,12 +139,9 @@ namespace KinectTV
                 
                 lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
                 rhandDetect = new SwipeGestureDetector(JointType.HandRight);
-
+                
                 lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
                 rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
-
-                lhandDetect.MinimalPeriodBetweenGestures = 500;
-                rhandDetect.MinimalPeriodBetweenGestures = 500;
             }
         }
 
@@ -201,6 +198,41 @@ namespace KinectTV
             }
         }
 
+        private void sendSkeleton(JSObject kinectObj, Skeleton skel)
+        {
+            JSObject jointsObj = new JSObject();
+            foreach (Joint joint in skel.Joints)
+            {
+                JSObject jointObj = new JSObject();
+                jointObj["x"] = joint.Position.X;
+                jointObj["y"] = joint.Position.Y;
+                jointObj["z"] = joint.Position.Z;
+
+                jointsObj[JointToString(joint.JointType)] = jointObj;
+            }
+
+            try
+            {
+                kinectObj.Invoke("onSkeleton", jointsObj);
+            }
+            catch (Exception)
+            {
+                ReportJSError("onSkeleton");
+            }
+        }
+
+        private void sendGesture(JSObject kinectObj, Skeleton skel)
+        {
+            // Do gesture stuff
+            Listening = ct.IsShouldersTowardsSensor(skel);
+            
+            Joint rightHand = skel.Joints.First(j => j.JointType == JointType.HandRight);
+            Joint leftHand = skel.Joints.First(j => j.JointType == JointType.HandLeft);
+
+            rhandDetect.Add(rightHand.Position, sensor);
+            lhandDetect.Add(leftHand.Position, sensor);
+        }
+
         void sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             // Is there any skeleton to play with?
@@ -219,37 +251,8 @@ namespace KinectTV
                 return;
             }
 
-            JSObject jointsObj = new JSObject();
-            foreach (Joint joint in skel.Joints)
-            {                
-                JSObject jointObj = new JSObject();
-                jointObj["x"] = joint.Position.X;
-                jointObj["y"] = joint.Position.Y;
-                jointObj["z"] = joint.Position.Z;
-                
-                jointsObj[JointToString(joint.JointType)] = jointObj;
-            }
-
-            try
-            {
-                kinectObj.Invoke("onSkeleton", jointsObj);
-            }
-            catch (Exception)
-            {
-                ReportJSError("onSkeleton");
-            }
-
-            // Do gesture stuff
-            Listening = ct.IsShouldersTowardsSensor(skel);
-            if (Listening)
-            {
-                Joint rightHand = skel.Joints.First(j => j.JointType == JointType.HandRight);
-                Joint leftHand = skel.Joints.First(j => j.JointType == JointType.HandLeft);
-
-                rhandDetect.Add(rightHand.Position, sensor);
-                lhandDetect.Add(leftHand.Position, sensor);
-            }
-            
+            sendGesture(kinectObj, skel);  
+            sendSkeleton(kinectObj, skel);          
         }
 
         private void CleanSensor()

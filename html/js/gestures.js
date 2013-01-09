@@ -39,8 +39,8 @@ var SwipeDetector = function (handler) {
         var start = 0;
         for (var i = 1; i < history.length - 1; i++) {
             if (
-                (!heightFun(history[0].pos, history[i].pos) ||
-                !dirFun(history[i].pos, history[i + 1].pos))
+                !heightFun(history[0].pos, history[i].pos) ||
+                !dirFun(history[i].pos, history[i + 1].pos)
             ) {
                 start = i;
             }
