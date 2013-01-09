@@ -27,6 +27,14 @@ namespace KinectTV
             InitBrowser();
         }
 
+        public void Debug(String txt)
+        {
+            if (wb.IsDocumentReady)
+            {
+                wb.ExecuteJavascript("debug('" + txt + "');");
+            }
+        }
+
         private void InitBrowser()
         {
             wb = new WebControl();
