@@ -12,6 +12,8 @@ namespace KinectTV
     static class Program
     {
 
+        private static Form debugForm;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -22,6 +24,8 @@ namespace KinectTV
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
+                debugForm = new DebugForm();
+                debugForm.Show();
                 Application.Run(new MainForm());
             }
             catch (System.Reflection.TargetInvocationException)
@@ -32,6 +36,7 @@ namespace KinectTV
 
         public static void Notify(String s)
         {
+            ((DebugForm)debugForm).Notify(s);
         }
         
     }
