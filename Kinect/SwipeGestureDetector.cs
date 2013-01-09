@@ -43,8 +43,8 @@ namespace KinectTV.Kinect
         {
             SwipeMinimalLength = 0.5f;
             SwipeMaximalHeight = 0.2f;
-            SwipeMinimalDuration = 500;
-            SwipeMaximalDuration = 2000;
+            SwipeMinimalDuration = 250;
+            SwipeMaximalDuration = 1500;
         }
         
         protected override void LookForGesture()

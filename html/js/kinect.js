@@ -95,9 +95,19 @@ var KinectHandler = {
             var fun = inCommands["input"];
             if (fun) fun();
         }
-        
-        swipeDetectL.add(skeldata["hand_left"]);
-        swipeDetectR.add(skeldata["hand_right"]);
+
+        //swipeDetectL.add(skeldata["hand_left"]);
+        //swipeDetectR.add(skeldata["hand_right"]);
     },
 
+    onGesture: function (gesture, joint) {
+        debug(gesture + " on " + joint);
+        if (gesture === "swipe_left" && joint === "hand_right") {
+            debug("Swipe left");
+            Input.run("left", inCommands);
+        } else if (gesture === "swipe_right" && joint === "hand_left") {
+            Input.run("right", inCommands);
+            debug("Swipe right");
+        }
+    }
 };

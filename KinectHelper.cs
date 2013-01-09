@@ -44,7 +44,7 @@ namespace KinectTV
                 {
                     if (kinect.Status == KinectStatus.Connected)
                     {
-                        Program.Notify("Kinect is not powered");
+                        Program.Notify("Kinect is connected");
                         sensor = kinect;
                         break;
                     }
@@ -95,6 +95,9 @@ namespace KinectTV
                     break;
 
                 case KinectStatus.NotPowered:
+                    Program.Notify("Kinect is not powered");
+                    break;
+
                 case KinectStatus.Disconnected:
                     try
                     {
@@ -150,13 +153,9 @@ namespace KinectTV
             JSObject kinectObj = getJSKinectHandler();
             if (kinectObj == null) return;
 
-            JSObject gestureObj = new JSObject();
-            gestureObj["joint"] = JointToString(e.Joint);
-            gestureObj["gesture"] = e.Gesture;
-
             try
             {
-                kinectObj.Invoke("onGesture", gestureObj);
+                kinectObj.Invoke("onGesture", e.Gesture, JointToString(e.Joint));
             }
             catch (Exception)
             {
