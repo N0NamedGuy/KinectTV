@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <title>Kinect TV</title>
+
+    <link rel="stylesheet" type="text/css" href="css/dstv.css"/>
+    <link rel="stylesheet" type="text/css" href="css/overlay.css"/>
+    <link rel="stylesheet" type="text/css" href="css/tvguide.css"/>
+    <link rel="stylesheet" type="text/css" href="css/mainmenu.css"/>
+    <link rel="stylesheet" type="text/css" href="css/magicplaylist.css"/>
+    <link rel="stylesheet" type="text/css" href="css/channels.css"/>
+    <link rel="stylesheet" type="text/css" href="css/volume.css"/>
+
+    <script type="text/javascript" src="js/lib/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.notify.1.0.js"></script>
+    
+    
+    <script type="text/javascript" src="js/kinect.js"></script>
+    <script type="text/javascript" src="js/speech.js"></script>
+    
+    <script type="text/javascript" src="js/channels.jsonp"></script>
+    
+    <script type="text/javascript" src="js/input.js"></script>
+    <script type="text/javascript" src="js/player.js"></script>
+    <script type="text/javascript" src="js/volume.js"></script>
+    <script type="text/javascript" src="js/overlay.js"></script>
+    <script type="text/javascript" src="js/menuutils.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    <script type="text/javascript" src="js/magicplaylist.js"></script>
+    <script type="text/javascript" src="js/tvguide.js"></script>
+    <script type="text/javascript" src="js/channels.js"></script>
+    <script type="text/javascript" src="js/dstv.js"></script>
+</head>
+<body>
+    <div id="debug">
+    </div>
+
+    <div id="player">
+    </div>
+
+    <div id="overlay">
+        <div id="top" class="panel"><span>Menu</span></div>
+        
+        <div id="bottom" class="panel">
+            <span class="info">
+                <h1 id="cur_show">Telejornal</h1><br />
+                <h2 id="cur_network">RTP 1</h2>
+            </span>
+            <span class="time">
+                <img src="img/vol.png"/>
+                <span id="vol">50%</span>&nbsp;&nbsp;
+                <span id="time_elapsed">1:32</span> /
+                <span id="time_total">2:14</span>
+            </span><br/>
+        </div>
+        
+        <div id="left" class="panel">
+            <span class="label"></span>
+        </div>
+        
+        <div id="right" class="panel">
+            <span class="label"></span>
+        </div>
+
+    </div>
+    
+    <div id="tvguide">
+    </div>
+    
+    <div id="menu" class="menu">
+        <div id="main"></div>
+        <div id="magic"></div>
+        <div id="channels"></div>
+    </div>
+
+    <div id="notification">Notification Text</div>
+    <div id="speech">Speech Text</div>
+
+    <canvas width="320" height="320" id="skel"></canvas>
+    <div id="cursor"/></div>
+</body>
+</html>

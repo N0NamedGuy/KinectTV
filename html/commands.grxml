@@ -1,0 +1,65 @@
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+  <rule id="rootRule">
+    <one-of>
+      <item>
+        <tag>left</tag>
+        <one-of>
+          <item> left </item>
+          <item> previous </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>right</tag>
+        <one-of>
+          <item> right </item>
+          <item> next </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>enter</tag>
+        <one-of>
+          <item> accept </item>
+          <item> ok </item>
+          <item> enter </item>
+          <item> go </item>
+          <item> confirm </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>exit</tag>
+        <one-of>
+          <item> back </item>
+          <item> cancel </item>
+          <item> return </item>
+          <item> exit </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>input</tag>
+        <one-of>
+          <item> tv </item>
+          <item> television </item>
+        </one-of>
+      </item>
+      
+      <item>
+        <tag>up</tag>
+        <one-of>
+          <item> up </item>
+          <item> more </item>
+          <item> higher </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>down</tag>
+        <one-of>
+          <item> down </item>
+          <item> less </item>
+          <item> lower </item>
+        </one-of>
+      </item>
+    </one-of>
+  </rule>
+</grammar>

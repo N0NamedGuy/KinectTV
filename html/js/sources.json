@@ -1,0 +1,11 @@
+[{
+    "title": "Creative Commons",
+    "subtitle": "An intro to creative commons",
+    "path": "video/cc.ogv",
+    "thumbnail": "video/cc.png"
+},{
+    "title": "Gizmo",
+    "subtitle": "A simple gizmo",
+    "path": "video/gizmo.webm",
+    "thumbnail": "video/gizmo.png"
+}]

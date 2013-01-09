@@ -1,0 +1,159 @@
+div#tvguide {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    background-color: rgba(64, 64, 64, 0.5);
+    color: rgb(233,233,233);
+}
+
+div#tvguide .label {
+    font-size: 24px;
+}
+
+div#tvguide h1 {
+    font-size: 36px;
+    font-weight: normal;
+    margin-left: 25px;
+    margin-top: 25px;
+}
+
+div#tvguide h2 {
+    font-size: 36px;
+}
+
+
+div#tvguide div#timeline  {
+    
+    width: 100%;
+    position: absolute;
+    top: 100px;
+    
+    /*padding-left: 10px;
+    margin-right: 10px;*/
+}
+
+div#tvguide div#timeline .times 
+{
+    border-radius: 10px;
+    height: 16px;
+    background-color: rgb(233,233,233);
+    width: 100%;
+    position: absolute;
+    left: 40px;
+    color: black;
+    overflow: hidden;
+}
+
+div#tvguide div#timeline .times .time 
+{
+    display: inline-block;
+    /*text-align: center;*/
+	
+    padding-left: 10px ;
+    padding-right: 10px ;
+    margin-right: 10px;
+}
+
+div#tvguide div#timeline div.shows 
+{
+    position: relative;
+    top: 40px;
+    left: 0px;
+}
+
+div#tvguide div#timeline ul.shows {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    display:inline-block;
+    
+    font-size: 21px;
+    overflow:hidden;
+    
+}
+
+div#tvguide div#timeline ul.shows li {
+    display: inline-block;
+    list-style-type: none;
+    
+			
+    width: 150px;
+    height: 150px;
+    
+    padding: 0;
+    padding: 10px 10px 10px 10px;
+    margin-right: 10px;
+    
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    
+    border-radius: 15px;
+    
+    background-color: #404040;
+	
+    vertical-align: middle;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	text-align: center;
+			
+    text-align: center;
+    overflow: hidden;
+    
+    
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+div#tvguide div#timeline ul.shows li.selected  {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 200px;
+}
+
+div#tvguide div#timeline ul.shows li.unselected  
+{
+    opacity: 0.5;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    height: 150px;
+}
+
+div#tvguide .info  {
+    background-color: #404040;
+    border-radius: 35px;
+    bottom: 0px;
+    
+    margin-bottom: 1%;
+    margin-left: 5%;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    position: absolute;
+    width: 90%;
+    height: 180px;
+}
+
+div#tvguide .info .thumb 
+{
+    background-color: #404040;
+    background-repeat: no-repeat;
+    background-position: left;
+    background-size: contain;
+    
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    position: absolute;
+    top: 25px;
+}
+
+div#tvguide .info .desc
+{
+    position: absolute;
+    left: 200px;
+    top: 10px;    
+}

@@ -1,0 +1,94 @@
+body {
+    background-color: #000000;
+    height:100%;
+    font-family: arial;
+    overflow:hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+}
+
+div#player {
+    width: 100%;
+    height: 100%;
+}
+
+div#notification 
+{
+    display: none;
+    position: absolute;
+    width: 24em;
+    height: 2em;
+    background-color: rgba(233,233,233,0.8);
+    color: black;
+    top: 50%;
+    
+    left: 50%;
+    margin-left: -12em;
+    font-size: 28px;
+    text-align: center;
+    
+    border-radius: 40px;
+}
+
+div#speech 
+{
+    display: none;
+    position: absolute;
+    width: 12em;
+    height: 2em;
+    background-color: rgba(233,233,233,0.8);
+    background-image: url("../img/mic.png");
+    background-repeat:no-repeat;
+    background-position: 15px;
+    background-size: contain;
+    color: black;
+    top: 5%;
+    
+    left: 50%;
+    margin-left: -6em;
+    font-size: 18px;
+    text-align: center;
+    
+    border-radius: 15px;
+}
+
+div#debug
+{
+    position: absolute;
+    width: 64em;
+    height: 2em;
+    background-color: rgba(233,233,233,0.8);
+    color: black;
+    bottom: 5%;
+    
+    left: 50%;
+    margin-left: -32em;
+    font-size: 18px;
+    text-align: center;
+    
+    border-radius: 15px;
+}
+
+div#cursor 
+{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    background-image: url("../img/cursor.png");
+    background-repeat:no-repeat;
+    background-size: contain;
+    z-index: 1001;
+}
+
+canvas#skel
+{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1000;
+}
