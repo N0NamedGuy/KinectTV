@@ -15,8 +15,8 @@ namespace KinectTV
         KinectSensor sensor;
 
         ContextTracker ct;
-        //SwipeGestureDetector rhandDetect;
-        //SwipeGestureDetector lhandDetect;
+        SwipeGestureDetector rhandDetect;
+        SwipeGestureDetector lhandDetect;
 
         JSObject kinectObj;
 
@@ -106,11 +106,11 @@ namespace KinectTV
                 sensor.SkeletonFrameReady += sensor_SkeletonFrameReady;
 
                 ct = new ContextTracker();
-                //lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
-                //rhandDetect = new SwipeGestureDetector(JointType.HandRight);
+                lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
+                rhandDetect = new SwipeGestureDetector(JointType.HandRight);
 
-                //lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
-                //rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
+                lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
+                rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
             }
         }
 
@@ -203,8 +203,8 @@ namespace KinectTV
                 Joint rightHand = skel.Joints.First(j => j.JointType == JointType.HandRight);
                 Joint leftHand = skel.Joints.First(j => j.JointType == JointType.HandLeft);
 
-                //rhandDetect.Add(rightHand.Position, sensor);
-                //lhandDetect.Add(leftHand.Position, sensor);
+                rhandDetect.Add(rightHand.Position, sensor);
+                lhandDetect.Add(leftHand.Position, sensor);
             }
             
         }
@@ -217,8 +217,8 @@ namespace KinectTV
                 sensor = null;
 
                 ct = null;
-                //rhandDetect = null;
-                //lhandDetect = null;
+                rhandDetect = null;
+                lhandDetect = null;
             }
         }
     }
