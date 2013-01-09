@@ -54,7 +54,6 @@
             this.Controls.Add(this.debugBox);
             this.Name = "DebugForm";
             this.Text = "Debug";
-            this.Load += new System.EventHandler(this.DebugForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
