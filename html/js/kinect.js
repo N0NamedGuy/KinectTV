@@ -66,9 +66,14 @@ var KinectFunctions = {
     }
 };
 
-var swipeDetect = new SwipeDetector(function (direction) {
-    debug("Swipe " + direction);
-    Input.run(direction, inCommands);
+var swipeDetectL = new SwipeDetector(function (direction) {
+    debug("Swipe (JS)" + direction);
+    if (direction === "right") Input.run(direction, inCommands);
+});
+
+var swipeDetectR = new SwipeDetector(function (direction) {
+    debug("Swipe (JS)" + direction);
+    if (direction === "left") Input.run(direction, inCommands);
 });
 
 var KinectHandler = {
@@ -90,8 +95,9 @@ var KinectHandler = {
             var fun = inCommands["input"];
             if (fun) fun();
         }
-
-        swipeDetect.add(skeldata["hand_right"]);
+        
+        swipeDetectL.add(skeldata["hand_left"]);
+        swipeDetectR.add(skeldata["hand_right"]);
     },
 
 };

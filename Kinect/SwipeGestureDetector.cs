@@ -21,13 +21,13 @@ namespace KinectTV.Kinect
             int start = 0;
             for (int i = 1; i < entries.Count - 1; i++)
             {
-                if (heightFun(entries[0].Position, entries[i].Position) &&
-                    dirFun(entries[0].Position, entries[i + 1].Position))
+                if (!heightFun(entries[0].Position, entries[i].Position) ||
+                    !dirFun(entries[0].Position, entries[i + 1].Position))
                 {
                     start = i;
                 }
 
-                if (!lenFun(entries[i].Position, entries[start].Position))
+                if (lenFun(entries[i].Position, entries[start].Position))
                 {
                     double milisecs = (entries[i].Time - entries[start].Time).TotalMilliseconds;
                     if (milisecs >= minTime && minTime <= maxTime)

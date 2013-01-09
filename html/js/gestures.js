@@ -25,10 +25,10 @@ GestureDetector.prototype.add = function (pos) {
 }
 
 var SwipeDetector = function (handler) {
-    this.minLen = 0.5;
-    this.maxHeight = 0.2;
-    this.minDuration = 250;
-    this.maxDuration = 1500;
+    var minLen = 0.4;
+    var maxHeight = 0.2;
+    var minDuration = 250;
+    var maxDuration = 1500;
 
     var _history = [];
     var _windowSize = 40;
@@ -39,28 +39,41 @@ var SwipeDetector = function (handler) {
         var start = 0;
         for (var i = 1; i < history.length - 1; i++) {
             if (
-                heightFun(history[0].pos, history[i].pos) &&
-                dirFun(history[0].pos, history[i + 1].pos)
-            ) start = i;
+                (!heightFun(history[0].pos, history[i].pos) ||
+                !dirFun(history[0].pos, history[i + 1].pos))
+            ) {
+                start = i;
+            }
+            if (lenFun(history[i].pos, history[start].pos)) {
+                var time = history[i].time - history[start].time;
 
-            if (!lenFun(history[i].pos, history[start].pos)) {
-                var time = history[i].time - history[start].pos;
-                if (time >= minTime && minTime <= maxTime) return true;
+                if (time >= minTime && minTime <= maxTime) {
+                    return true;
+                }
             }
         }
-
         return false;
     };
     var _gestCheck = function () {
-        var heightFun = function (p1, p2) { Math.abs(p2.y - p1.y) < this.maxHeight };
-        var lenFun = function (p1, p2) { Math.abs(p2.y - p1.y) > this.minLen };
+        var heightFun = function (p1, p2) {
+            return (Math.abs(p2.y - p1.y) < maxHeight);
 
-        var rightDir = function (p1, p2) { p2.x - p1.x > -0.01 };
-        var leftDir = function (p1, p2) { p2.x - p1.x < 0.01 };
+        };
+        var lenFun = function (p1, p2) {
+            if (Math.abs(p2.x - p1.x) > minLen) {
+                debug(Math.abs(p2.x - p1.x) + ": " + minLen);
+            }
+            return Math.abs(p2.x - p1.x) > minLen
+        };
 
-        if (_scanPositions(this._history, heightFun, rightDir, lenFun, this.minDuration, this.maxDuration)) {
+        var rightDir = function (p1, p2) { return p2.x - p1.x > -0.01 };
+        var leftDir = function (p1, p2) { return p2.x - p1.x < 0.01 };
+
+        if (_scanPositions(this._history, heightFun, rightDir, lenFun, minDuration, maxDuration)) {
+            this._history = [];
             return "right";
-        } else if (_scanPositions(this._history, heightFun, leftDir, lenFun, this.minDuration, this.maxDuration)) {
+        } else if (_scanPositions(this._history, heightFun, leftDir, lenFun, minDuration, maxDuration)) {
+            this._history = [];
             return "left";
         };
 
@@ -68,7 +81,7 @@ var SwipeDetector = function (handler) {
     };
 
     var _handler = handler;
-    
+
     return new GestureDetector(_gestCheck, _handler);
 }
 

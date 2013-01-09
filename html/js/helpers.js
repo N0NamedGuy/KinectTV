@@ -1,4 +1,4 @@
-﻿Math.lerpf = function(v, min, max) {
+﻿Math.lerp = function(v, min, max) {
     return (v * (max - min)) + min
 }
 

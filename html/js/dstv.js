@@ -35,10 +35,14 @@ $(document).ready(function () {
 
 
 var mouseSwipeDetect = new SwipeDetector(function (direction) {
-    debug("Mouse swipe: " + direction);
+    console.log("Mouse swipe: " + direction);
 });
-
+/*
 $(document).mousemove(function (e) {
-    var p = { x: e.pageX, y: e.pageY };
+    var p = {
+        x: Math.lerp((e.pageX / $(document).width()), -1, 1),
+        y: Math.lerp((e.pageY / $(document).height()), -1, 1) };
+    //debug(p.x + " " + p.y);
     mouseSwipeDetect.add(p);
-}); 
+});
+*/
