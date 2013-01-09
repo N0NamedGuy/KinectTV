@@ -18,7 +18,7 @@ namespace KinectTV
 
         public void Notify(string text)
         {
-            debugBox.Text += text + "\r\n";
+            debugBox.Text += DateTime.Now + "> " + text + "\r\n";
             debugBox.SelectionStart = debugBox.Text.Length;
             debugBox.ScrollToCaret();
         }
