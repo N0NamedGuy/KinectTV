@@ -40,7 +40,7 @@ var SwipeDetector = function (handler) {
         for (var i = 1; i < history.length - 1; i++) {
             if (
                 (!heightFun(history[0].pos, history[i].pos) ||
-                !dirFun(history[0].pos, history[i + 1].pos))
+                !dirFun(history[i].pos, history[i + 1].pos))
             ) {
                 start = i;
             }
@@ -56,14 +56,11 @@ var SwipeDetector = function (handler) {
     };
     var _gestCheck = function () {
         var heightFun = function (p1, p2) {
-            return (Math.abs(p2.y - p1.y) < maxHeight);
+            return Math.abs(p2.y - p1.y) < maxHeight;
 
         };
         var lenFun = function (p1, p2) {
-            if (Math.abs(p2.x - p1.x) > minLen) {
-                debug(Math.abs(p2.x - p1.x) + ": " + minLen);
-            }
-            return Math.abs(p2.x - p1.x) > minLen
+            return Math.abs(p2.x - p1.x) > minLen;
         };
 
         var rightDir = function (p1, p2) { return p2.x - p1.x > -0.01 };
