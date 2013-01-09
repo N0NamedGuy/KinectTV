@@ -1,12 +1,10 @@
 ﻿var SpeechHandler = {
     onRecognized: function (command, recognized, confidence) {
-        if (recognized)
-            $("div#speech").notify(
-                recognized + " (" + confidence + ")",
-                NOTIFY_DELAY
-             );
+        $("div#speech").notify(
+            recognized + " (" + confidence.toFixed(2) + ")",
+            NOTIFY_DELAY
+        );
 
-        var fun = inCommands[command.toLowerCase()];
-        if (fun) fun();
+        Input.run(command.toLowerCase(), inCommands);
     }
 };

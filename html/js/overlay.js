@@ -83,12 +83,9 @@ var Overlay = {
             var networks = Object.keys(CHANNELS);
             network_id = networks[network_id];
             network = CHANNELS[network_id];
-
-            console.log(networks, network);
         }
 
         var show = network.schedule[show_id];
-        console.log(network, show);
 
         this.cur_network = network.number;
         this.cur_show = show_id;

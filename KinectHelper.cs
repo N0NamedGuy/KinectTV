@@ -18,8 +18,8 @@ namespace KinectTV
         SwipeGestureDetector rhandDetect;
         SwipeGestureDetector lhandDetect;
 
-        JSObject kinectObj;
-
+        JSObject kinectGlobalObj;
+        
         public bool Listening { get; set; }
 
         private JSObject getJSKinectHandler()
@@ -60,8 +60,9 @@ namespace KinectTV
 
         void wv_DocumentReady(object sender, UrlEventArgs e_)
         {
-            kinectObj = wv.CreateGlobalJavascriptObject("KinectHelper");
-            kinectObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
+            kinectGlobalObj = wv.CreateGlobalJavascriptObject("KinectHelper");
+
+            kinectGlobalObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
         }
 
         ~KinectHelper()
@@ -72,12 +73,20 @@ namespace KinectTV
         void Kinects_StatusChanged(object sender, StatusChangedEventArgs e)
         {
             JSObject kinectObj = getJSKinectHandler();
-            if (kinectObj == null) return;
+            //if (kinectObj == null) return;
 
             switch (e.Status)
             {
                 case KinectStatus.Connected:
-                    ((JSObject)kinectObj).Invoke("onConnected");
+                    try
+                    {
+                        kinectObj.Invoke("onConnected");
+                    }
+                    catch (Exception)
+                    {
+                        ReportJSError("onConnected");
+                    }
+
                     if (sensor == null)
                     {
                         sensor = e.Sensor;
@@ -87,7 +96,14 @@ namespace KinectTV
 
                 case KinectStatus.NotPowered:
                 case KinectStatus.Disconnected:
-                    ((JSObject)kinectObj).Invoke("onDisconnected");
+                    try
+                    {
+                        kinectObj.Invoke("onDisconnected");
+                    }
+                    catch (Exception)
+                    {
+                        ReportJSError("onDisconnected");
+                    }
                     if (sensor == e.Sensor)
                     {
                         CleanSensor();
@@ -97,6 +113,14 @@ namespace KinectTV
                 default:
                     break;
             }
+        }
+
+        private void ReportJSError(string evt)
+        {
+            Error err = wv.GetLastError();
+            Program.Notify(
+                evt + " error: " + err.ToString() + " (" + err.GetTypeCode() + ")"
+            ); 
         }
 
         private void InitSensor()
@@ -129,8 +153,15 @@ namespace KinectTV
             JSObject gestureObj = new JSObject();
             gestureObj["joint"] = JointToString(e.Joint);
             gestureObj["gesture"] = e.Gesture;
-                        
-            kinectObj.Invoke("onGesture", gestureObj);
+
+            try
+            {
+                kinectObj.Invoke("onGesture", gestureObj);
+            }
+            catch (Exception)
+            {
+                ReportJSError("onGesture");
+            }
         }
 
 
@@ -200,8 +231,14 @@ namespace KinectTV
                 jointsObj[JointToString(joint.JointType)] = jointObj;
             }
 
-            kinectObj.Invoke("onSkeleton", jointsObj);
-
+            try
+            {
+                kinectObj.Invoke("onSkeleton", jointsObj);
+            }
+            catch (Exception)
+            {
+                ReportJSError("onSkeleton");
+            }
 
             // Do gesture stuff
             Listening = ct.IsShouldersTowardsSensor(skel);

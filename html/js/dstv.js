@@ -22,18 +22,23 @@ $(document).ready(function () {
     MainMenu.show();
     inCommands = menuCommands;*/
 
-    var canvas = $("canvas#skel");
-    KinectHandler.ctx = canvas[0].getContext("2d");
-    KinectHandler.cw = canvas.width();
-    KinectHandler.ch = canvas.height();
-    
     Overlay.create();
 
     Overlay.hide();
     Overlay.toggle();
     inCommands = overlayCommands;
 
-    Player.fadeIn();
-    Player.play();
-    Player.setVolume(50, 100);
+    //Player.fadeIn();
+    //Player.play();
+    //Player.setVolume(50, 100);
 });
+
+
+var mouseSwipeDetect = new SwipeDetector(function (direction) {
+    debug("Mouse swipe: " + direction);
+});
+
+$(document).mousemove(function (e) {
+    var p = { x: e.pageX, y: e.pageY };
+    mouseSwipeDetect.add(p);
+}); 

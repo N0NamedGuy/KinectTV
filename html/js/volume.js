@@ -91,8 +91,6 @@ var VolumeControl = {
         if (value > max) value = max;
         if (value < 0) value = 0;
 
-        console.log(value);
-
         Player.setVolume(value, max);
     },
 

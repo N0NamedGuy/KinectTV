@@ -122,15 +122,7 @@ var Player = {
         if (this.videoElem !== undefined) {
             this.videoElem.fadeOut(speed, callback);
         }
-    },
-    
-    next: function () {
-        console.log("Go to next channel");
-    },
-    
-    prev: function () {
-        console.log("Go to prev channel");
-    },
+    }
 };
 
 function _showMenu() {

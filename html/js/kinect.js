@@ -1,15 +1,9 @@
-﻿function lerpf(v, min, max) {
-    return (v * (max - min)) + min
-}
-
-function fromSkelToCanvas(joint, w, h) {
+﻿function fromSkelToCanvas(joint, w, h) {
     return {
         x: (joint.x + 0.5) * w,
         y: (0.5 - joint.y) * h
     };
 }
-
-
 
 var KinectFunctions = {
     drawSkeleton: function (skeldata) {
@@ -72,6 +66,11 @@ var KinectFunctions = {
     }
 };
 
+var swipeDetect = new SwipeDetector(function (direction) {
+    debug("Swipe " + direction);
+    Input.run(direction, inCommands);
+});
+
 var KinectHandler = {
     /**
     * Gets called when new skeleton data arrives from the kinect
@@ -91,21 +90,8 @@ var KinectHandler = {
             var fun = inCommands["input"];
             if (fun) fun();
         }
+
+        swipeDetect.add(skeldata["hand_right"]);
     },
 
-    onGesture: function (e) {
-        if (!KinectHelper.userIsFacing()) return;
-        //debug(e.joint + ": " + e.gesture);
-
-        if (e.gesture === "swipe_left" && e.joint === "hand_right") {
-            debug("Swipe Left");
-            var fun = inCommands["left"];
-            if (fun) fun();
-        } else if (e.gesture === "swipe_right" && e.joint === "hand_left") {
-            debug("Swipe Right");
-            var fun = inCommands["right"];
-            if (fun) fun();
-        }
-
-    }
 };

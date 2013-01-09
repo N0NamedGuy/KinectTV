@@ -10,11 +10,15 @@ var Input = {
         105: "input"     // i
     },
 
-    callback: function (e, comands) {
+    callback: function (e, commands) {
         var cc = e.charCode;
-        var key = this.keys[cc];
+        var command = this.keys[cc];
 
-        var fun = comands[key];
+        this.run(command, commands);
+    },
+
+    run: function (command, commands) {
+        var fun = commands[command];
         if (fun) fun();
     }
 };
