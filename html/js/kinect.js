@@ -9,6 +9,8 @@ function fromSkelToCanvas(joint, w, h) {
     };
 }
 
+
+
 var KinectFunctions = {
     drawSkeleton: function (skeldata) {
         var canvas = $("canvas#skel");
@@ -60,32 +62,47 @@ var KinectFunctions = {
         ctx.stroke();
     },
 
-    doCursor: function (joint) {
+    doCursor: function (cursor, joint) {
         var npos = {
             left: (((joint.x + 0.5) / 2) * 100) + "%",
             top: (100 - (((joint.y + 0.5) / 2) * 100)) + "%"
         };
 
-        $("div#cursor").css(npos);
+        cursor.css(npos);
     }
 };
 
 var KinectHandler = {
     /**
-     * Gets called when new skeleton data arrives from the kinect
-     */
+    * Gets called when new skeleton data arrives from the kinect
+    */
     onSkeleton: function (skeldata) {
         KinectFunctions.drawSkeleton(skeldata);
-        KinectFunctions.doCursor(skeldata["hand_right"]);
+        KinectFunctions.doCursor(
+            $("div#cursor_r"),
+            skeldata["hand_right"]
+        );
+        KinectFunctions.doCursor(
+            $("div#cursor_l"),
+            skeldata["hand_left"]
+        );
+
+        if (skeldata["hand_right"].y > skeldata["head"].y) {
+            var fun = inCommands["input"];
+            if (fun) fun();
+        }
     },
 
     onGesture: function (e) {
-        debug(e.joint + ": " + e.gesture);
+        if (!KinectHelper.userIsFacing()) return;
+        //debug(e.joint + ": " + e.gesture);
 
-        if (e.gesture === "swipe_left") {
+        if (e.gesture === "swipe_left" && e.joint === "hand_right") {
+            debug("Swipe Left");
             var fun = inCommands["left"];
             if (fun) fun();
-        } else if (e.gesture === "swipe_right") {
+        } else if (e.gesture === "swipe_right" && e.joint === "hand_left") {
+            debug("Swipe Right");
             var fun = inCommands["right"];
             if (fun) fun();
         }

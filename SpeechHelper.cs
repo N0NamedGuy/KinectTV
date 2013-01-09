@@ -68,7 +68,6 @@ namespace KinectTV
             reco.LoadGrammar(g);
 
             reco.SpeechRecognized += reco_SpeechRecognized;
-
             reco.SetInputToDefaultAudioDevice();
             reco.RecognizeAsync(RecognizeMode.Multiple);
 
@@ -79,10 +78,14 @@ namespace KinectTV
             JSObject speechHandler = getJSSpeechHandler();
             if (speechHandler == null) return;
 
-            var command = e.Result.Semantics.Value.ToString();
-            var recognized = e.Result.Text + "(" + e.Result.Confidence.ToString("0.00") + ")";
-
-            speechHandler.Invoke("onRecognized", command, recognized);
+            string command = e.Result.Semantics.Value.ToString();
+            
+            if (wv.IsDocumentReady)
+                speechHandler.Invoke(
+                    "onRecognized",
+                    command,
+                    e.Result.Text, e.Result.Confidence
+                );
         }
     }
 }

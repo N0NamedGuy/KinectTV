@@ -59,6 +59,9 @@ namespace KinectTV
             form.Load += new EventHandler(form_Load);
             form.FormClosing += new FormClosingEventHandler(form_FormClosing);
 
+            kh = new KinectHelper(wb);
+            sp = new SpeechHelper(wb);
+
             return form;   
         }
 
@@ -75,14 +78,14 @@ namespace KinectTV
 
         static void wb_DocumentReady(object sender, UrlEventArgs e)
         {
-            kh = new KinectHelper(wb);
-            sp = new SpeechHelper(wb);
 
             using (JSObject app = wb.CreateGlobalJavascriptObject("App"))
             {
                 app.Bind("exit", false, (s, e_) =>
                 {
                     Application.Exit();
+                    kh = null;
+                    sp = null;
                 });
             }
         }

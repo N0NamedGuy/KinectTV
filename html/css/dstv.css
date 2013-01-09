@@ -72,7 +72,7 @@ div#debug
     border-radius: 15px;
 }
 
-div#cursor 
+div.cursor 
 {
     position: absolute;
     left: 50%;

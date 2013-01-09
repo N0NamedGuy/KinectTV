@@ -32,9 +32,7 @@ namespace KinectTV
         {
             this.wv = wv;
             Listening = false;
-
-            kinectObj = wv.CreateGlobalJavascriptObject("KinectHelper");
-            kinectObj.Bind("userIsFacingKinect", true, (s, e) => e.Result = Listening);
+            wv.DocumentReady += new UrlEventHandler(wv_DocumentReady);
 
             try
             {
@@ -60,11 +58,16 @@ namespace KinectTV
             }
         }
 
+        void wv_DocumentReady(object sender, UrlEventArgs e_)
+        {
+            kinectObj = wv.CreateGlobalJavascriptObject("KinectHelper");
+            kinectObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
+        }
+
         ~KinectHelper()
         {
             CleanSensor();
         }
-       
 
         void Kinects_StatusChanged(object sender, StatusChangedEventArgs e)
         {
@@ -106,11 +109,15 @@ namespace KinectTV
                 sensor.SkeletonFrameReady += sensor_SkeletonFrameReady;
 
                 ct = new ContextTracker();
+                
                 lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
                 rhandDetect = new SwipeGestureDetector(JointType.HandRight);
 
                 lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
                 rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
+
+                lhandDetect.MinimalPeriodBetweenGestures = 500;
+                rhandDetect.MinimalPeriodBetweenGestures = 500;
             }
         }
 
