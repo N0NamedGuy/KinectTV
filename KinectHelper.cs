@@ -139,7 +139,10 @@ namespace KinectTV
                 
                 lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
                 rhandDetect = new SwipeGestureDetector(JointType.HandRight);
-                
+
+                lhandDetect.swipeDir = SwipeGestureDetector.SwipeDirection.Right;
+                rhandDetect.swipeDir = SwipeGestureDetector.SwipeDirection.Left;
+
                 lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
                 rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
             }

@@ -64,6 +64,7 @@ namespace KinectTV.Kinect
                     new GestureEventArgs { Gesture = gesture, Joint = Joint });
 
                 lastGesture = DateTime.Now;
+                Program.Notify(gesture + " gesture on " + Joint.ToString()); 
             }
             entries.Clear();
         }

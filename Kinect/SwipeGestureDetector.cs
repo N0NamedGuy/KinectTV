@@ -12,7 +12,14 @@ namespace KinectTV.Kinect
         public float SwipeMaximalHeight { get; set; }
         public int SwipeMinimalDuration { get; set; }
         public int SwipeMaximalDuration { get; set; }
-        public Boolean checkSwipeRight = true;
+
+        public enum SwipeDirection
+        {
+            Left, Right, Both
+        }
+
+
+        public SwipeDirection swipeDir = SwipeDirection.Both;
 
         public SwipeGestureDetector(JointType joint, int windowSize = 20)
             : base(joint, windowSize)
@@ -67,27 +74,25 @@ namespace KinectTV.Kinect
                 (p1, p2) => p2.X - p1.X < 0.01f;
 
             // Swipe to right
-            if (ScanPositions(
+            if (swipeDir == SwipeDirection.Right && ScanPositions(
                 heightFun, // Height
                 rightDir, // Right direction
                 lengthFun,  // Length
                 SwipeMinimalDuration, SwipeMinimalDuration
             ))
             {
-                Program.Notify("Swipe right on " + Joint.ToString());
                 RaiseGestureDetected("swipe_right");
                 return;
             }
 
             // Swipe to left
-            if (ScanPositions(
+            else if (swipeDir == SwipeDirection.Left &&  ScanPositions(
                 heightFun, // Height
                 leftDir, // Left direction
                 lengthFun,  // Length
                 SwipeMinimalDuration, SwipeMinimalDuration
             ))
             {
-                Program.Notify("Swipe left on " + Joint.ToString());
                 RaiseGestureDetected("swipe_left");
                 return;
             }

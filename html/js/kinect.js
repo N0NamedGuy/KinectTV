@@ -104,13 +104,9 @@ var KinectHandler = {
         
         //debug(gesture + " on " + joint);
         if (gesture === "swipe_left" && joint === "hand_right") {
-            debug("Swipe left (C#)");
-            var fun = inCommands["left"];
-            if (fun) fun();
+            Input.run("left", inCommands);
         } else if (gesture === "swipe_right" && joint === "hand_left") {
             Input.run("right", inCommands);
-            var fun = inCommands["right"];
-            if (fun) fun();
         }
     }
 };
