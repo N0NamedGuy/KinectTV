@@ -74,7 +74,6 @@ namespace KinectTV.Kinect
                 SwipeMinimalDuration, SwipeMinimalDuration
             ))
             {
-                Program.Notify("Swipe right on " + Joint.ToString());
                 RaiseGestureDetected("swipe_right");
                 return;
             }
@@ -87,7 +86,6 @@ namespace KinectTV.Kinect
                 SwipeMinimalDuration, SwipeMinimalDuration
             ))
             {
-                Program.Notify("Swipe left on " + Joint.ToString());
                 RaiseGestureDetected("swipe_left");
                 return;
             }
