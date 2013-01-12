@@ -29,7 +29,6 @@ namespace KinectTV.Kinect
             int minTime, int maxTime)
         {
             int start = 0;
-            // TODO: Switch to iterator!!!
             for (int i = 1; i < entries.Count - 1; i++)
             {
                 if (

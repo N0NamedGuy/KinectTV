@@ -21,7 +21,8 @@ namespace KinectTV.Kinect
     public abstract class GestureDetector
     {
         public int MinimalPeriodBetweenGestures { get; set; }
-        protected readonly List<Entry> entries = new List<Entry>();
+        //protected readonly List<Entry> entries = new List<Entry>();
+        protected readonly CircularBuffer<Entry> entries;
 
         public event EventHandler<GestureEventArgs> OnGestureDetected;
         public JointType Joint { get; set; }
@@ -32,6 +33,7 @@ namespace KinectTV.Kinect
 
         protected GestureDetector(JointType joint, int windowSize = 20)
         {
+            entries = new CircularBuffer<Entry>(20);
             this.Joint = joint;
             this.windowSize = windowSize;
             MinimalPeriodBetweenGestures = 0;
@@ -42,10 +44,12 @@ namespace KinectTV.Kinect
             Entry newEntry = new Entry { Position = Vector3.ToVector3(pos), Time = DateTime.Now };
             entries.Add(newEntry);
 
+            /*
             if (entries.Count > windowSize)
             {
                 entries.RemoveAt(0);
             }
+            */
 
             LookForGesture();
         }
