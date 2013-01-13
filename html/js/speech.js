@@ -1,6 +1,6 @@
 ﻿var SpeechHandler = {
     onRecognized: function (command, recognized, confidence) {
-        if (KinectHelper.userIsFacing()) {
+        //if (KinectHelper.userIsFacing()) {
 
             $("div#speech").notify(
                 recognized + " (" + confidence.toFixed(2) + ")",
@@ -8,6 +8,6 @@
             );
 
             Input.run(command.toLowerCase(), inCommands);
-        }
+        //}
     }
 };

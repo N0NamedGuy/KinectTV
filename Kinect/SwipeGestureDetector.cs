@@ -15,12 +15,24 @@ namespace KinectTV.Kinect
 
         public enum SwipeDirection
         {
-            Left, Right, Both
+            Left, Right, 
+            Up, Down,
+            Front, Back
         }
 
 
-        public SwipeDirection swipeDir = SwipeDirection.Both;
+        public bool[] SwipeDirections = new bool[Enum.GetValues(typeof(SwipeDirection)).Length];
 
+        public void AddDirection(SwipeDirection dir)
+        {
+            SwipeDirections[(int)dir] = true; 
+        }
+
+        public void RemoveDirection(SwipeDirection dir)
+        {
+            SwipeDirections[(int)dir] = false;
+        }
+        
         public SwipeGestureDetector(JointType joint, int windowSize = 20)
             : base(joint, windowSize)
         {
@@ -61,40 +73,57 @@ namespace KinectTV.Kinect
         
         protected override void LookForGesture()
         {
-            Func<Vector3, Vector3, bool> heightFun =
-                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < SwipeMaximalHeight;
-
-            Func<Vector3, Vector3, bool> lengthFun =
-                (p1, p2) => Math.Abs(p2.X - p1.X) > SwipeMinimalLength;
-
-            Func<Vector3, Vector3, bool> rightDir =
-                (p1, p2) => p2.X - p1.X > -0.01f;
-
-            Func<Vector3, Vector3, bool> leftDir =
-                (p1, p2) => p2.X - p1.X < 0.01f;
-
-            // Swipe to right
-            if (swipeDir == SwipeDirection.Right && ScanPositions(
-                heightFun, // Height
-                rightDir, // Right direction
-                lengthFun,  // Length
-                SwipeMinimalDuration, SwipeMinimalDuration
-            ))
+            Func<Vector3, Vector3, bool>[] heightFuns =
             {
-                RaiseGestureDetected("swipe_right");
-                return;
-            }
+                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < SwipeMaximalHeight, // X axis
+                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < SwipeMaximalHeight, // X axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Y axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Y axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Z axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight  // Z axis
+            };
 
-            // Swipe to left
-            else if (swipeDir == SwipeDirection.Left &&  ScanPositions(
-                heightFun, // Height
-                leftDir, // Left direction
-                lengthFun,  // Length
-                SwipeMinimalDuration, SwipeMinimalDuration
-            ))
+            Func<Vector3, Vector3, bool>[] lengthFuns =
             {
-                RaiseGestureDetected("swipe_left");
-                return;
+                (p1, p2) => Math.Abs(p2.X - p1.X) > SwipeMinimalLength, // X axis
+                (p1, p2) => Math.Abs(p2.X - p1.X) > SwipeMinimalLength, // X axis
+                (p1, p2) => Math.Abs(p2.Y - p1.Y) > SwipeMinimalLength, // Y axis
+                (p1, p2) => Math.Abs(p2.Y - p1.Y) > SwipeMinimalLength, // Y axis
+                (p1, p2) => Math.Abs(p2.Z - p1.Z) > SwipeMinimalLength, // Z axis
+                (p1, p2) => Math.Abs(p2.Z - p1.Z) > SwipeMinimalLength  // Z axis
+            };
+
+            Func<Vector3, Vector3, bool>[] directionFuns =
+            {
+                (p1, p2) => p2.X - p1.X < 0.01f,  // left
+                (p1, p2) => p2.X - p1.X > -0.01f, // right
+                
+                (p1, p2) => p2.Y - p1.Y > -0.01f, // down
+                (p1, p2) => p2.Y - p1.Y < 0.01f,  // up
+                
+                (p1, p2) => p2.Y - p1.Y < 0.01f,  // back
+                (p1, p2) => p2.Y - p1.Y > -0.01f, // front
+            };
+
+            string[] eventNames =
+            {
+                "swipe_left", "swipe_right",
+                "swipe_up", "swipe_down",
+                "push", "pull"
+            };
+
+            foreach (SwipeDirection dir in Enum.GetValues(typeof(SwipeDirection)))
+            {
+                if (SwipeDirections[(int)dir] && ScanPositions(
+                    heightFuns[(int)dir],
+                    directionFuns[(int)dir],
+                    lengthFuns[(int)dir],
+                    SwipeMinimalDuration, SwipeMaximalDuration))
+                {
+
+                    RaiseGestureDetected(eventNames[(int)dir]);
+                    return;
+                }
             }
         }
     }
