@@ -16,6 +16,7 @@ namespace KinectTV
 
         ContextTracker ct;
         LinearGestureDetector linearDetect;
+        PositionDetector handAboveHead;
 
         JSObject kinectGlobalObj;
         
@@ -31,11 +32,20 @@ namespace KinectTV
         {
             this.wv = wv;
             Listening = false;
-            wv.ProcessCreated += new EventHandler(wv_ProcessCreated);
+            wv.ProcessCreated += wv_ProcessCreated;
 
             linearDetect = new LinearGestureDetector();
             linearDetect.OnGestureDetected += linearDetect_OnGestureDetected;
 
+            handAboveHead = new PositionDetector((skel) =>
+            {
+                Joint headJoint = skel.Joints.First((j) => j.JointType == JointType.Head);
+                Joint handJoint = skel.Joints.First((j) => j.JointType == JointType.HandRight);
+                
+                return (handJoint.Position.Y - headJoint.Position.Y) > 0.02f;
+            });
+            handAboveHead.OnPositionDetected += handAboveHead_OnPositionDetected;
+            
             try
             {
                 // Listen to kinect status change
@@ -59,6 +69,21 @@ namespace KinectTV
                 Program.Notify("Kinect exception: " + ex.ToString());
             }
 
+        }
+
+        void handAboveHead_OnPositionDetected(object sender, PositionEventArgs e)
+        {
+            JSObject kinectObj = getJSKinectHandler();
+            if (kinectObj == null) return;
+
+            try
+            {
+                kinectObj.Invoke("onPosition", e.TimeElapsed);
+            }
+            catch (Exception)
+            {
+                ReportJSError("onPosition");
+            }
         }
 
         void wv_ProcessCreated(object sender, EventArgs e_)
@@ -181,7 +206,6 @@ namespace KinectTV
             }
         }
 
-
         private static Skeleton[] GetSkeletons(SkeletonFrame frame)
         {
             if (frame == null) return null;
@@ -283,12 +307,10 @@ namespace KinectTV
             Skeleton[] skels = GetSkeletons(frame);
             
             Skeleton skel = skels.FirstOrDefault(s => s.TrackingState == SkeletonTrackingState.Tracked);
-            if (skel == null)
-            {
-                return;
-            }
+            if (skel == null) return;
 
-            linearDetect.Update(skel);  
+            handAboveHead.Update(skel);
+            linearDetect.Update(skel);
             sendSkeleton(kinectObj, skel);          
         }
 

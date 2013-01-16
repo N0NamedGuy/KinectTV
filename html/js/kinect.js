@@ -90,12 +90,7 @@ var KinectHandler = {
             $("div#cursor_l"),
             skeldata["hand_left"]
         );
-
-        if (skeldata["hand_right"].y > skeldata["head"].y) {
-            var fun = inCommands["input"];
-            if (fun) fun();
-        }
-
+        
         //swipeDetectL.add(skeldata["hand_left"]);
         //swipeDetectR.add(skeldata["hand_right"]);
     },
@@ -112,5 +107,10 @@ var KinectHandler = {
         if (gesture === "swipe_down" && joint === "hand_right") {
             Input.run("enter", inCommands);
         }
+    },
+
+    onPosition: function (time) {
+        var fun = inCommands["input"];
+        if (fun) fun();
     }
 };
