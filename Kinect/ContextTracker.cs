@@ -8,6 +8,12 @@ namespace KinectTV.Kinect
 {
     public class ContextTracker
     {
+        public class ContextPoint
+        {
+            public DateTime Time { get; set; }
+            public Vector3 Position { get; set; }
+        }
+
         readonly Dictionary<int, List<ContextPoint>> positions = new Dictionary<int, List<ContextPoint>>();
         readonly int windowSize;
 
