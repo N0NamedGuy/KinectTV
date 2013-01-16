@@ -8,30 +8,29 @@ namespace KinectTV.Kinect
 {
     class LinearGestureDetector: GestureDetector
     {
-        public float SwipeMinimalLength { get; set; }
-        public float SwipeMaximalHeight { get; set; }
-        public int SwipeMinimalDuration { get; set; }
-        public int SwipeMaximalDuration { get; set; }
+        public float MinimalLength { get; set; }
+        public float MaximalHeight { get; set; }
+        public int MinimalDuration { get; set; }
+        public int MaximalDuration { get; set; }
 
-        public enum SwipeDirection
+        public enum Direction
         {
             Left, Right, 
             Up, Down,
             Front, Back
         }
-
-
+        
         public bool[,] SwipeDirections = new bool
             [Enum.GetValues(typeof(JointType)).Length,
             Enum.GetValues(typeof(JointType)).Length];
 
-        public void AddDirection(JointType joint, SwipeDirection dir)
+        public void AddDirection(JointType joint, Direction dir)
         {
             Track(joint);
             SwipeDirections[(int)joint, (int)dir] = true; 
         }
 
-        public void RemoveDirection(JointType joint, SwipeDirection dir)
+        public void RemoveDirection(JointType joint, Direction dir)
         {
             Untrack(joint);
             SwipeDirections[(int)joint, (int)dir] = false;
@@ -40,10 +39,10 @@ namespace KinectTV.Kinect
         public LinearGestureDetector(int windowSize = 20)
             : base(windowSize)
         {
-            SwipeMinimalLength = 0.4f;
-            SwipeMaximalHeight = 0.2f;
-            SwipeMinimalDuration = 250;
-            SwipeMaximalDuration = 1500;
+            MinimalLength = 0.4f;
+            MaximalHeight = 0.2f;
+            MinimalDuration = 250;
+            MaximalDuration = 1500;
         }
 
         protected bool ScanPositions(JointType joint,
@@ -82,22 +81,22 @@ namespace KinectTV.Kinect
         {
             Func<Vector3, Vector3, bool>[] heightFuns =
             {
-                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < SwipeMaximalHeight, // X axis
-                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < SwipeMaximalHeight, // X axis
-                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Y axis
-                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Y axis
-                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight, // Z axis
-                (p1, p2) =>  Math.Abs(p2.X - p1.X) < SwipeMaximalHeight  // Z axis
+                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < MaximalHeight, // X axis
+                (p1, p2) =>  Math.Abs(p2.Y - p1.Y) < MaximalHeight, // X axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < MaximalHeight, // Y axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < MaximalHeight, // Y axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < MaximalHeight, // Z axis
+                (p1, p2) =>  Math.Abs(p2.X - p1.X) < MaximalHeight  // Z axis
             };
 
             Func<Vector3, Vector3, bool>[] lengthFuns =
             {
-                (p1, p2) => Math.Abs(p2.X - p1.X) > SwipeMinimalLength, // X axis
-                (p1, p2) => Math.Abs(p2.X - p1.X) > SwipeMinimalLength, // X axis
-                (p1, p2) => Math.Abs(p2.Y - p1.Y) > SwipeMinimalLength, // Y axis
-                (p1, p2) => Math.Abs(p2.Y - p1.Y) > SwipeMinimalLength, // Y axis
-                (p1, p2) => Math.Abs(p2.Z - p1.Z) > SwipeMinimalLength, // Z axis
-                (p1, p2) => Math.Abs(p2.Z - p1.Z) > SwipeMinimalLength  // Z axis
+                (p1, p2) => Math.Abs(p2.X - p1.X) > MinimalLength, // X axis
+                (p1, p2) => Math.Abs(p2.X - p1.X) > MinimalLength, // X axis
+                (p1, p2) => Math.Abs(p2.Y - p1.Y) > MinimalLength, // Y axis
+                (p1, p2) => Math.Abs(p2.Y - p1.Y) > MinimalLength, // Y axis
+                (p1, p2) => Math.Abs(p2.Z - p1.Z) > MinimalLength, // Z axis
+                (p1, p2) => Math.Abs(p2.Z - p1.Z) > MinimalLength  // Z axis
             };
 
             Func<Vector3, Vector3, bool>[] directionFuns =
@@ -122,14 +121,14 @@ namespace KinectTV.Kinect
             foreach (JointType joint in Enum.GetValues(typeof(JointType)))
             {
                 if (!this.Tracked(joint)) continue;
-                foreach (SwipeDirection dir in Enum.GetValues(typeof(SwipeDirection)))
+                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
                 {
 
                     if (SwipeDirections[(int)joint, (int)dir] && ScanPositions(joint,
                         heightFuns[(int)dir],
                         directionFuns[(int)dir],
                         lengthFuns[(int)dir],
-                        SwipeMinimalDuration, SwipeMaximalDuration))
+                        MinimalDuration, MaximalDuration))
                     {
 
                         RaiseGestureDetected(eventNames[(int)dir], joint);

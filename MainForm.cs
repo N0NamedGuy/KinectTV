@@ -42,12 +42,12 @@ namespace KinectTV
             wb.Visible = true;
             wb.Dock = DockStyle.Fill;
 
-            wb.DocumentReady += wb_DocumentReady;
+            wb.ProcessCreated += wb_ProcessCreated;
 
             this.Controls.Add(wb);
         }
 
-        void wb_DocumentReady(object sender, UrlEventArgs e)
+        void wb_ProcessCreated(object sender, EventArgs e)
         {
             using (JSObject app = wb.CreateGlobalJavascriptObject("App"))
             {
@@ -59,6 +59,7 @@ namespace KinectTV
                 });
             }
         }
+
 
         private void InitHelpers()
         {

@@ -31,7 +31,10 @@ namespace KinectTV
         {
             this.wv = wv;
             Listening = false;
-            wv.DocumentReady += new UrlEventHandler(wv_DocumentReady);
+            wv.ProcessCreated += new EventHandler(wv_ProcessCreated);
+
+            linearDetect = new LinearGestureDetector();
+            linearDetect.OnGestureDetected += linearDetect_OnGestureDetected;
 
             try
             {
@@ -55,14 +58,33 @@ namespace KinectTV
             {
                 Program.Notify("Kinect exception: " + ex.ToString());
             }
+
         }
 
-        void wv_DocumentReady(object sender, UrlEventArgs e_)
+        void wv_ProcessCreated(object sender, EventArgs e_)
         {
             kinectGlobalObj = wv.CreateGlobalJavascriptObject("KinectHelper");
 
             kinectGlobalObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
+            kinectGlobalObj.Bind("linearTrack", false, (s, e) =>
+            {
+                if (e.Arguments.Length < 2) return;
+                JSValue joint = e.Arguments[0];
+                JSValue dir = e.Arguments[1];
+                if (!(joint.IsString && dir.IsString)) return;
+
+                LinearGestureDetector.Direction eDir =
+                    (LinearGestureDetector.Direction)
+                    Enum.Parse(typeof(LinearGestureDetector.Direction), dir.ToString(), true);
+
+                try
+                {
+                    linearDetect.AddDirection(StringToJoint(e.Arguments[0]), eDir);
+                }
+                catch (Exception) { }
+            });
         }
+ 
 
         ~KinectHelper()
         {
@@ -135,13 +157,7 @@ namespace KinectTV
                 sensor.SkeletonFrameReady += sensor_SkeletonFrameReady;
 
                 ct = new ContextTracker();
-
-                linearDetect = new LinearGestureDetector();
-                linearDetect.OnGestureDetected += linearDetect_OnGestureDetected;
-
-                linearDetect.AddDirection(JointType.HandRight, LinearGestureDetector.SwipeDirection.Left);
-                linearDetect.AddDirection(JointType.HandRight, LinearGestureDetector.SwipeDirection.Down);
-                linearDetect.AddDirection(JointType.HandLeft, LinearGestureDetector.SwipeDirection.Right);
+                linearDetect.Clear();
             }
         }
 
@@ -174,27 +190,55 @@ namespace KinectTV
         {
             switch (type)
             {
-                case JointType.AnkleLeft: return "ankle_left";
-                case JointType.AnkleRight: return "ankle_right";
-                case JointType.ElbowLeft: return "elbow_left";
-                case JointType.ElbowRight: return "elbow_right";
-                case JointType.FootLeft: return "foot_left";
-                case JointType.FootRight: return "foot_right";
-                case JointType.HandLeft: return "hand_left";
-                case JointType.HandRight: return "hand_right";
-                case JointType.Head: return "head";
-                case JointType.HipCenter: return "hip_center";
-                case JointType.HipLeft: return "hip_left";
-                case JointType.HipRight: return "hip_right";
-                case JointType.KneeLeft: return "knee_left";
-                case JointType.KneeRight: return "knee_right";
-                case JointType.ShoulderCenter: return "shoulder_center";
-                case JointType.ShoulderLeft: return  "shoulder_left";
-                case JointType.ShoulderRight: return "shoulder_right";
-                case JointType.Spine: return "spine";
-                case JointType.WristLeft: return "wrist_left";
-                case JointType.WristRight: return "wrist_right";
+                case JointType.AnkleLeft:       return "ankle_left";
+                case JointType.AnkleRight:      return "ankle_right";
+                case JointType.ElbowLeft:       return "elbow_left";
+                case JointType.ElbowRight:      return "elbow_right";
+                case JointType.FootLeft:        return "foot_left";
+                case JointType.FootRight:       return "foot_right";
+                case JointType.HandLeft:        return "hand_left";
+                case JointType.HandRight:       return "hand_right";
+                case JointType.Head:            return "head";
+                case JointType.HipCenter:       return "hip_center";
+                case JointType.HipLeft:         return "hip_left";
+                case JointType.HipRight:        return "hip_right";
+                case JointType.KneeLeft:        return "knee_left";
+                case JointType.KneeRight:       return "knee_right";
+                case JointType.ShoulderCenter:  return "shoulder_center";
+                case JointType.ShoulderLeft:    return  "shoulder_left";
+                case JointType.ShoulderRight:   return "shoulder_right";
+                case JointType.Spine:           return "spine";
+                case JointType.WristLeft:       return "wrist_left";
+                case JointType.WristRight:      return "wrist_right";
                 default: return "";
+            }
+        }
+
+        JointType StringToJoint(String type)
+        {
+            switch (type)
+            {
+                case "ankle_left":      return JointType.AnkleLeft; 
+                case "ankle_right":     return JointType.AnkleRight;     
+                case "elbow_left":      return JointType.ElbowLeft;    
+                case "elbow_right":     return JointType.ElbowRight;     
+                case "foot_left":       return JointType.FootLeft;       
+                case "foot_right":      return JointType.FootRight;      
+                case "hand_left":       return JointType.HandLeft;       
+                case "hand_right":      return JointType.HandRight;      
+                case "head":            return JointType.Head;
+                case "hip_center":      return JointType.HipCenter;      
+                case "hip_left":        return JointType.HipLeft;    
+                case "hip_right":       return JointType.HipRight;       
+                case "knee_left":       return JointType.KneeLeft;        
+                case "knee_right":      return JointType.KneeRight;      
+                case "shoulder_center": return JointType.ShoulderCenter; 
+                case "shoulder_left":   return JointType.ShoulderLeft;   
+                case "shoulder_right":  return JointType.ShoulderRight;  
+                case "spine":           return JointType.Spine;
+                case "wrist_left":      return JointType.WristLeft;
+                case "wrist_right":     return JointType.WristRight;     
+                default: throw new Exception("Unknown joint");
             }
         }
 
@@ -251,7 +295,6 @@ namespace KinectTV
                 sensor = null;
 
                 ct = null;
-                linearDetect = null;
             }
         }
     }

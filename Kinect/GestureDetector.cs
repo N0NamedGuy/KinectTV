@@ -80,6 +80,14 @@ namespace KinectTV.Kinect
             LookForGesture();
         }
 
+        public void Clear()
+        {
+            foreach (int i in Enumerable.Range(0, entries.Length))
+            {
+                entries[i].Clear();
+            }
+        }
+
         protected abstract void LookForGesture();
 
         protected void RaiseGestureDetected(String gesture, JointType joint)

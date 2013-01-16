@@ -22,6 +22,14 @@ $(document).ready(function () {
     MainMenu.show();
     inCommands = menuCommands;*/
 
+    // Awesomium bug
+    // Global objects are not avaiable at this stage
+    window.setTimeout(function () {
+        KinectHelper.linearTrack("hand_right", "left");
+        KinectHelper.linearTrack("hand_right", "down");
+        KinectHelper.linearTrack("hand_left", "right");
+    }, 1000);
+
     Overlay.create();
 
     Overlay.hide();
