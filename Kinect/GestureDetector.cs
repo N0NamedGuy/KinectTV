@@ -9,7 +9,8 @@ namespace KinectTV.Kinect
     public class Entry
     {
         public DateTime Time { get; set;  }
-        public Vector3 Position { get; set;  }
+        public Vector3 Position { get; set; }
+        public JointType Joint { get; set; }
     }
 
     public class GestureEventArgs : EventArgs
@@ -21,52 +22,77 @@ namespace KinectTV.Kinect
     public abstract class GestureDetector
     {
         public int MinimalPeriodBetweenGestures { get; set; }
-        //protected readonly List<Entry> entries = new List<Entry>();
-        protected readonly CircularBuffer<Entry> entries;
+        protected readonly CircularBuffer<Entry>[] entries;
+        protected bool[] TrackedJoints;
 
         public event EventHandler<GestureEventArgs> OnGestureDetected;
-        public JointType Joint { get; set; }
 
         DateTime lastGesture = DateTime.Now;
 
         readonly int windowSize;
 
-        protected GestureDetector(JointType joint, int windowSize = 20)
+        protected GestureDetector(int windowSize = 20)
         {
-            entries = new CircularBuffer<Entry>(20);
-            this.Joint = joint;
+            int nJoints = Enum.GetNames(typeof(JointType)).Length;
+            TrackedJoints = new bool[nJoints];
+            entries = new CircularBuffer<Entry>[nJoints];
+            
+            foreach (int i in Enumerable.Range(0, entries.Length))
+            {
+                entries[i] = new CircularBuffer<Entry>(windowSize);
+            }
+
             this.windowSize = windowSize;
             MinimalPeriodBetweenGestures = 0;
         }
 
-        public virtual void Add(SkeletonPoint pos, KinectSensor sensor)
+        public void Track(JointType joint)
         {
-            Entry newEntry = new Entry { Position = Vector3.ToVector3(pos), Time = DateTime.Now };
-            entries.Add(newEntry);
+            TrackedJoints[(int)joint] = true;
+        }
 
-            /*
-            if (entries.Count > windowSize)
+        public void Untrack(JointType joint)
+        {
+            TrackedJoints[(int)joint] = false;
+        }
+
+        public bool Tracked(JointType joint)
+        {
+            return TrackedJoints[(int)joint];
+        }
+
+        public virtual void Add(Skeleton skel)
+        {
+            foreach (Joint joint in skel.Joints)
             {
-                entries.RemoveAt(0);
+                if (!Tracked(joint.JointType)) continue;
+
+                Entry newEntry = new Entry
+                {
+                    Position = Vector3.ToVector3(joint.Position),
+                    Time = DateTime.Now,
+                    Joint =  joint.JointType
+                };
+
+                entries[(int)joint.JointType].Add(newEntry);
             }
-            */
 
             LookForGesture();
         }
 
         protected abstract void LookForGesture();
 
-        protected void RaiseGestureDetected(String gesture)
+        protected void RaiseGestureDetected(String gesture, JointType joint)
         {
             if ((DateTime.Now - lastGesture).TotalMilliseconds > MinimalPeriodBetweenGestures)
             {
                 if (OnGestureDetected != null) OnGestureDetected(this,
-                    new GestureEventArgs { Gesture = gesture, Joint = Joint });
+                    new GestureEventArgs { Gesture = gesture, Joint = joint });
 
                 lastGesture = DateTime.Now;
-                Program.Notify(gesture + " gesture on " + Joint.ToString()); 
+                Program.Notify(gesture + " gesture on " + joint.ToString()); 
             }
-            entries.Clear();
+            entries[(int)joint].Clear();
         }
 
         

@@ -21,20 +21,24 @@ namespace KinectTV.Kinect
         }
 
 
-        public bool[] SwipeDirections = new bool[Enum.GetValues(typeof(SwipeDirection)).Length];
+        public bool[,] SwipeDirections = new bool
+            [Enum.GetValues(typeof(JointType)).Length,
+            Enum.GetValues(typeof(JointType)).Length];
 
-        public void AddDirection(SwipeDirection dir)
+        public void AddDirection(JointType joint, SwipeDirection dir)
         {
-            SwipeDirections[(int)dir] = true; 
+            Track(joint);
+            SwipeDirections[(int)joint, (int)dir] = true; 
         }
 
-        public void RemoveDirection(SwipeDirection dir)
+        public void RemoveDirection(JointType joint, SwipeDirection dir)
         {
-            SwipeDirections[(int)dir] = false;
+            Untrack(joint);
+            SwipeDirections[(int)joint, (int)dir] = false;
         }
         
-        public LinearGestureDetector(JointType joint, int windowSize = 20)
-            : base(joint, windowSize)
+        public LinearGestureDetector(int windowSize = 20)
+            : base(windowSize)
         {
             SwipeMinimalLength = 0.4f;
             SwipeMaximalHeight = 0.2f;
@@ -42,11 +46,14 @@ namespace KinectTV.Kinect
             SwipeMaximalDuration = 1500;
         }
 
-        protected bool ScanPositions(Func<Vector3, Vector3, bool> heightFun,
+        protected bool ScanPositions(JointType joint,
+            Func<Vector3, Vector3, bool> heightFun,
             Func<Vector3, Vector3, bool> dirFun,
             Func<Vector3, Vector3, bool> lenFun,
             int minTime, int maxTime)
         {
+            CircularBuffer<Entry> entries = this.entries[(int)joint];
+
             int start = 0;
             for (int i = 1; i < entries.Count - 1; i++)
             {
@@ -112,17 +119,22 @@ namespace KinectTV.Kinect
                 "push", "pull"
             };
 
-            foreach (SwipeDirection dir in Enum.GetValues(typeof(SwipeDirection)))
+            foreach (JointType joint in Enum.GetValues(typeof(JointType)))
             {
-                if (SwipeDirections[(int)dir] && ScanPositions(
-                    heightFuns[(int)dir],
-                    directionFuns[(int)dir],
-                    lengthFuns[(int)dir],
-                    SwipeMinimalDuration, SwipeMaximalDuration))
+                if (!this.Tracked(joint)) continue;
+                foreach (SwipeDirection dir in Enum.GetValues(typeof(SwipeDirection)))
                 {
 
-                    RaiseGestureDetected(eventNames[(int)dir]);
-                    return;
+                    if (SwipeDirections[(int)joint, (int)dir] && ScanPositions(joint,
+                        heightFuns[(int)dir],
+                        directionFuns[(int)dir],
+                        lengthFuns[(int)dir],
+                        SwipeMinimalDuration, SwipeMaximalDuration))
+                    {
+
+                        RaiseGestureDetected(eventNames[(int)dir], joint);
+                        continue;
+                    }
                 }
             }
         }
