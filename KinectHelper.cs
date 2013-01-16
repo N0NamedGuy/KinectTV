@@ -288,7 +288,7 @@ namespace KinectTV
                 return;
             }
 
-            linearDetect.Add(skel);  
+            linearDetect.Update(skel);  
             sendSkeleton(kinectObj, skel);          
         }
 

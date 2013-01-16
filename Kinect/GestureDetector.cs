@@ -61,7 +61,7 @@ namespace KinectTV.Kinect
             return TrackedJoints[(int)joint];
         }
 
-        public virtual void Add(Skeleton skel)
+        public virtual void Update(Skeleton skel)
         {
             foreach (Joint joint in skel.Joints)
             {
