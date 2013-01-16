@@ -6,7 +6,7 @@ using Microsoft.Kinect;
 
 namespace KinectTV.Kinect
 {
-    class SwipeGestureDetector: GestureDetector
+    class LinearGestureDetector: GestureDetector
     {
         public float SwipeMinimalLength { get; set; }
         public float SwipeMaximalHeight { get; set; }
@@ -33,7 +33,7 @@ namespace KinectTV.Kinect
             SwipeDirections[(int)dir] = false;
         }
         
-        public SwipeGestureDetector(JointType joint, int windowSize = 20)
+        public LinearGestureDetector(JointType joint, int windowSize = 20)
             : base(joint, windowSize)
         {
             SwipeMinimalLength = 0.4f;

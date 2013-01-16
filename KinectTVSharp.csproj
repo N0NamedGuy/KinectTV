@@ -86,7 +86,7 @@
     <Compile Include="Kinect\ContextTracker.cs" />
     <Compile Include="Kinect\GestureDetector.cs" />
     <Compile Include="KinectHelper.cs" />
-    <Compile Include="Kinect\SwipeGestureDetector.cs" />
+    <Compile Include="Kinect\LinearGestureDetector.cs" />
     <Compile Include="Kinect\Vector3.cs" />
     <Compile Include="SpeechHelper.cs" />
     <Compile Include="Program.cs" />

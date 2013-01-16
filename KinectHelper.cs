@@ -15,8 +15,8 @@ namespace KinectTV
         KinectSensor sensor;
 
         ContextTracker ct;
-        SwipeGestureDetector rhandDetect;
-        SwipeGestureDetector lhandDetect;
+        LinearGestureDetector rhandDetect;
+        LinearGestureDetector lhandDetect;
 
         JSObject kinectGlobalObj;
         
@@ -137,12 +137,12 @@ namespace KinectTV
 
                 ct = new ContextTracker();
                 
-                lhandDetect = new SwipeGestureDetector(JointType.HandLeft);
-                rhandDetect = new SwipeGestureDetector(JointType.HandRight);
+                lhandDetect = new LinearGestureDetector(JointType.HandLeft);
+                rhandDetect = new LinearGestureDetector(JointType.HandRight);
 
-                lhandDetect.AddDirection(SwipeGestureDetector.SwipeDirection.Right);
-                rhandDetect.AddDirection(SwipeGestureDetector.SwipeDirection.Left);
-                rhandDetect.AddDirection(SwipeGestureDetector.SwipeDirection.Down);
+                lhandDetect.AddDirection(LinearGestureDetector.SwipeDirection.Right);
+                rhandDetect.AddDirection(LinearGestureDetector.SwipeDirection.Left);
+                rhandDetect.AddDirection(LinearGestureDetector.SwipeDirection.Down);
 
                 lhandDetect.OnGestureDetected += swipe_OnGestureDetected;
                 rhandDetect.OnGestureDetected += swipe_OnGestureDetected;
