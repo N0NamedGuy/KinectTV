@@ -75,9 +75,11 @@ namespace KinectTV.Kinect
                 };
 
                 entries[(int)joint.JointType].Add(newEntry);
+
+                LookForGesture(joint.JointType);
             }
 
-            LookForGesture();
+            
         }
 
         public void Clear()
@@ -88,7 +90,7 @@ namespace KinectTV.Kinect
             }
         }
 
-        protected abstract void LookForGesture();
+        protected abstract void LookForGesture(JointType joint);
 
         protected void RaiseGestureDetected(String gesture, JointType joint)
         {

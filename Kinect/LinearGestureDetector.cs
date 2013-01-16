@@ -77,7 +77,7 @@ namespace KinectTV.Kinect
             return false;
         }
         
-        protected override void LookForGesture()
+        protected override void LookForGesture(JointType joint)
         {
             Func<Vector3, Vector3, bool>[] heightFuns =
             {
@@ -118,24 +118,21 @@ namespace KinectTV.Kinect
                 "push", "pull"
             };
 
-            foreach (JointType joint in Enum.GetValues(typeof(JointType)))
+            foreach (Direction dir in Enum.GetValues(typeof(Direction)))
             {
-                if (!this.Tracked(joint)) continue;
-                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
+
+                if (SwipeDirections[(int)joint, (int)dir] && ScanPositions(joint,
+                    heightFuns[(int)dir],
+                    directionFuns[(int)dir],
+                    lengthFuns[(int)dir],
+                    MinimalDuration, MaximalDuration))
                 {
 
-                    if (SwipeDirections[(int)joint, (int)dir] && ScanPositions(joint,
-                        heightFuns[(int)dir],
-                        directionFuns[(int)dir],
-                        lengthFuns[(int)dir],
-                        MinimalDuration, MaximalDuration))
-                    {
-
-                        RaiseGestureDetected(eventNames[(int)dir], joint);
-                        continue;
-                    }
+                    RaiseGestureDetected(eventNames[(int)dir], joint);
+                    continue;
                 }
             }
+           
         }
     }
 }

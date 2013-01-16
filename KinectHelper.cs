@@ -63,15 +63,12 @@ namespace KinectTV
 
         void wv_ProcessCreated(object sender, EventArgs e_)
         {
-            kinectGlobalObj = wv.CreateGlobalJavascriptObject("KinectHelper");
-
-            kinectGlobalObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
-            kinectGlobalObj.Bind("linearTrack", false, (s, e) =>
+            Func<Boolean, JavascriptMethodEventArgs, Boolean> linearTrack = (track, e) =>
             {
-                if (e.Arguments.Length < 2) return;
+                if (e.Arguments.Length < 2) return false;
                 JSValue joint = e.Arguments[0];
                 JSValue dir = e.Arguments[1];
-                if (!(joint.IsString && dir.IsString)) return;
+                if (!(joint.IsString && dir.IsString)) return false;
 
                 LinearGestureDetector.Direction eDir =
                     (LinearGestureDetector.Direction)
@@ -79,13 +76,21 @@ namespace KinectTV
 
                 try
                 {
-                    linearDetect.AddDirection(StringToJoint(e.Arguments[0]), eDir);
+                    if (track) linearDetect.AddDirection(StringToJoint(e.Arguments[0]), eDir);
+                    else linearDetect.RemoveDirection(StringToJoint(e.Arguments[0]), eDir);
                 }
-                catch (Exception) { }
-            });
+                catch (Exception) { return false; }
+                return true;
+            };
+
+            kinectGlobalObj = wv.CreateGlobalJavascriptObject("KinectHelper");
+
+            kinectGlobalObj.Bind("userIsFacing", true, (s, e) => e.Result = Listening);
+
+            kinectGlobalObj.Bind("linearTrack", true, (s, e) => e.Result = linearTrack(true, e));
+            kinectGlobalObj.Bind("linearUntrack", false, (s, e) => e.Result = linearTrack(false, e));
         }
  
-
         ~KinectHelper()
         {
             CleanSensor();
